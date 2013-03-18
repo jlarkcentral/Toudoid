@@ -33,7 +33,7 @@ public class ToudoidActivity extends Activity {
 		expandableList = (ExpandableListView) findViewById(R.id.expandableView);
 
 
-		ArrayList<Group> groupes = new ArrayList<Group>();
+		final ArrayList<Group> groupes = new ArrayList<Group>();
 		Group groupe = new Group("General");
 		ArrayList<Task> donnees = new ArrayList<Task>();
 		for (int x = 1; x < 5; x++) {
@@ -41,8 +41,10 @@ public class ToudoidActivity extends Activity {
 		}
 		groupe.setObjets(donnees);
 		groupes.add(groupe);
-
-		adapter = new ToudoidAdapter(this,groupes); 	
+	
+		
+		adapter = new ToudoidAdapter(this,groupes);
+		expandableList.setAdapter(adapter);
 
 		addGroupButton = (Button) findViewById(R.id.Button_addGroup);
 		//Log.i("Toudoid", addTaskButton.toString());
@@ -57,18 +59,27 @@ public class ToudoidActivity extends Activity {
 				// set title
 				alertDialogBuilder.setTitle("Add a group");
 
+				final EditText input = new EditText(context);
+				
 				// set dialog message
 				alertDialogBuilder
-				.setMessage("")
+				//.setMessage("")
+				.setView(input)
 				.setCancelable(false)
-				.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+				.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
-						// if this button is clicked, close
-						// current activity
-						ToudoidActivity.this.finish();
+				
+						String newGroupName = input.getText().toString();
+						if (newGroupName!=""){
+							Group newGroup = new Group(newGroupName);
+							groupes.add(newGroup);
+							adapter.notifyDataSetChanged();
+							return;
+						}
+						else dialog.cancel();
 					}
 				})
-				.setNegativeButton("No",new DialogInterface.OnClickListener() {
+				.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						// if this button is clicked, just close
 						// the dialog box and do nothing
@@ -84,8 +95,11 @@ public class ToudoidActivity extends Activity {
 			}
 		});
 
-				ToudoidAdapter adapter = new ToudoidAdapter(this, groupes);
-		
-				expandableList.setAdapter(adapter);
+				
+	}
+	
+	public void onResume() {
+		super.onResume();
+		adapter.notifyDataSetChanged(); // refresh..
 	}
 }

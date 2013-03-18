@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +58,6 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.task_view, null);
             
             childViewHolder.taskCheckBox = (CheckBox) convertView.findViewById(R.id.taskCB);
-            //childViewHolder.buttonChild = (Button) convertView.findViewById(R.id.BTChild);
             
             convertView.setTag(childViewHolder);
         } else {
@@ -66,14 +66,6 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
         
         childViewHolder.taskCheckBox.setText(objet.getNom());
         
-        //childViewHolder.buttonChild.setText(objet.getNom());
-        
-        //childViewHolder.buttonChild.setOnClickListener(new OnClickListener() {
-			
-//			public void onClick(View v) {
-//				Toast.makeText(context, "Groupe : " + objet.getGroupe().getNom() + " - Bouton : " + objet.getNom(), Toast.LENGTH_SHORT).show();				
-//			}
-//		});
         
         return convertView;
 	}
@@ -117,18 +109,18 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
     				// set title
     				alertDialogBuilder.setTitle("Add a task");
 
+    				final EditText input = new EditText(context);
+    	 			
     				// set dialog message
     				alertDialogBuilder
-    				.setMessage("")
+    				.setView(input)
     				.setCancelable(false)
-    				.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+    				.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
     					public void onClick(DialogInterface dialog,int id) {
-    						// if this button is clicked, close
-    						// current activity
-    						dialog.cancel();
+    						
     					}
     				})
-    				.setNegativeButton("No",new DialogInterface.OnClickListener() {
+    				.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
     					public void onClick(DialogInterface dialog,int id) {
     						// if this button is clicked, just close
     						// the dialog box and do nothing
