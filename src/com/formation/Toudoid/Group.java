@@ -27,5 +27,9 @@ public class Group {
 	public void setObjets(ArrayList<Task> objets) {
 		this.objets = objets;
 	}
+	
+	public void addTask(Task t) {
+		objets.add(t);
+	}
 
 }

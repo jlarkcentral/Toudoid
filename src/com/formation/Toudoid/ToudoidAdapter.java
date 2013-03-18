@@ -89,7 +89,7 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 		GroupViewHolder gholder;
 		
-		Group group = (Group) getGroup(groupPosition);
+		final Group group = (Group) getGroup(groupPosition);
 		
         if (convertView == null) {
         	gholder = new GroupViewHolder();
@@ -117,6 +117,14 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
     				.setCancelable(false)
     				.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
     					public void onClick(DialogInterface dialog,int id) {
+    						String newTaskName = input.getText().toString();
+    						if (newTaskName!=""){
+    							Task newTask = new Task(group,newTaskName);
+    							group.addTask(newTask);
+    							notifyDataSetChanged();
+    							return;
+    						}
+    						else dialog.cancel();
     						
     					}
     				})
