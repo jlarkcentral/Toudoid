@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import com.formation.Toudoid.R;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +27,10 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 		this.context = context;
 		this.groupes = groupes;
 		inflater = LayoutInflater.from(context);
+	}
+	
+	public Context getContext(){
+		return context;
 	}
 	
 	@Override
@@ -100,6 +106,45 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
         	
         	gholder.textViewGroup = (TextView) convertView.findViewById(R.id.TVGroup);
         	gholder.buttonGroup = (Button) convertView.findViewById(R.id.Button_add);
+        	///
+        	gholder.buttonGroup.setOnClickListener(new View.OnClickListener()
+    		{
+
+    			public void onClick(View v) {
+    				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+    						context);
+
+    				// set title
+    				alertDialogBuilder.setTitle("Add a task");
+
+    				// set dialog message
+    				alertDialogBuilder
+    				.setMessage("")
+    				.setCancelable(false)
+    				.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+    					public void onClick(DialogInterface dialog,int id) {
+    						// if this button is clicked, close
+    						// current activity
+    						dialog.cancel();
+    					}
+    				})
+    				.setNegativeButton("No",new DialogInterface.OnClickListener() {
+    					public void onClick(DialogInterface dialog,int id) {
+    						// if this button is clicked, just close
+    						// the dialog box and do nothing
+    						dialog.cancel();
+    					}
+    				});
+
+    				// create alert dialog
+    				AlertDialog alertDialog = alertDialogBuilder.create();
+
+    				// show it
+    				alertDialog.show();
+    			}
+    		});
+        	
+        	////
         	convertView.setTag(gholder);
         } else {
         	gholder = (GroupViewHolder) convertView.getTag();
