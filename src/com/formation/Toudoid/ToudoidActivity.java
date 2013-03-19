@@ -76,6 +76,9 @@ public class ToudoidActivity extends Activity {
 							Group newGroup = new Group(newGroupName);
 							groupes.add(newGroup);
 							adapter.notifyDataSetChanged();
+							if(false){
+								//pouet
+							}
 							return;
 						}
 						else dialog.cancel();
