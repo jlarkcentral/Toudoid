@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item android:id="@+id/addGroupItemMenu"
+          android:title="@string/ButtonAddGroup" />
+    <item android:id="@+id/DevRedItemMenu"
+          android:title="@string/DevRed" />
+    <item android:id="@+id/deleteAllItemMenu"
+          android:title="@string/deleteAll" />
+
+</menu>

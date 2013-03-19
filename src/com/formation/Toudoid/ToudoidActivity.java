@@ -12,6 +12,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +25,6 @@ public class ToudoidActivity extends Activity {
 	private ExpandableListView expandableList = null;
 	private ToudoidAdapter adapter = null;
 	private Button addGroupButton; 
-	private String newTask_Text = "";
 	final Context context = this;
 
 	@Override
@@ -101,5 +103,30 @@ public class ToudoidActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		adapter.notifyDataSetChanged(); // refresh..
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.menu_toudoid, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.addGroupItemMenu:
+	            //
+	            return true;
+	        case R.id.DevRedItemMenu:
+	            //
+	            return true;
+	        case R.id.deleteAllItemMenu:
+	            //
+	            return true;    
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 }

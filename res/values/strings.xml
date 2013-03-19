@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, TestexpandableActivity!</string>
+    <string name="hello">Hello World</string>
     <string name="app_name">Toudoid</string>
-    <string name="ButtonAdd">add</string>
-    <string name="Groupe">groupe</string>
-    <string name="ButtonAddGroup">add group</string>
+    <string name="ButtonAdd">Add Task</string>
+    <string name="ButtonAddGroup">Add Group</string>
+    <string name="deleteAll">Delete All</string>
+    <string name="DevRed">Display</string>
 </resources>
