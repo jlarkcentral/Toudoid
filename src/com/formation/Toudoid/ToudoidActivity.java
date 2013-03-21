@@ -30,9 +30,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 
-/*
- * Classe de l activité principale
- */
 public class ToudoidActivity extends Activity {
 
 	private static final String TAG = ToudoidActivity.class.getName();
@@ -52,12 +49,6 @@ public class ToudoidActivity extends Activity {
 
 		expandableList = (ExpandableListView) findViewById(R.id.expandableView);
 
-
-		// comm en bas supprimés ici
-
-
-
-
 		File saveFile = getBaseContext().getFileStreamPath(saveFileName);
 		if(!saveFile.exists()){
 			Log.i("ToudoidINFO", "toudoidSave DOES NOT exists");
@@ -68,7 +59,6 @@ public class ToudoidActivity extends Activity {
 
 			stringOfContents = readFromFile();
 			stringToGroupes();
-			//			Log.i("toudoidINFO", "groupe 1 : "+groupes.toString());
 
 		}
 
@@ -77,7 +67,6 @@ public class ToudoidActivity extends Activity {
 		adapter.notifyDataSetChanged();
 
 		addGroupButton = (Button) findViewById(R.id.Button_addGroup);
-		//Log.i("Toudoid", addTaskButton.toString());
 
 		addGroupButton.setOnClickListener(new View.OnClickListener()
 		{
@@ -146,7 +135,18 @@ public class ToudoidActivity extends Activity {
 			showAddGroupDialog();
 			return true;
 		case R.id.DevRedItemMenu:
-			//expandableList.collapseGroup();
+//			boolean totallyCollapsed=false;
+			for(int j=0;j<groupes.size();j++){
+				if (expandableList.isGroupExpanded(j)){
+					for(int i=0;i<groupes.size();i++){
+						expandableList.collapseGroup(i);
+					}
+					return true;
+				}
+			}
+			for(int i=0;i<groupes.size();i++){
+				expandableList.expandGroup(i);
+			}
 			return true;
 		case R.id.deleteAllItemMenu:
 			groupes = new ArrayList<Group>();
@@ -256,67 +256,4 @@ public class ToudoidActivity extends Activity {
 		super.onPause();
 	}
 
-	//	@Override
-	//	public void onResume() {
-	//		
-	//		stringOfContents = readFromFile();
-	//		Log.i("ToudoidINFO", "stringOfContents onResume :" + stringOfContents);
-	//		stringToGroupes();
-	//		adapter.notifyDataSetChanged(); // refresh..
-	//		super.onResume();
-	//	}
 }
-
-
-
-
-// ouverture ou creation du fichier de sauvegarde
-//		File saveFile = new File("toudoidSave");
-//		if(!saveFile.exists()){
-//			try {
-//				Log.i("ToudoidINFO", "toudoidSave exists");
-//				saveFile.createNewFile();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//		else Log.i("ToudoidINFO", "toudoidSave exists");
-//		
-//		Log.i("ToudoidINFO", "stringOfContents initial : " + stringOfContents);
-//
-//		// copie du fichier de sauvegarde dans une String
-//		StringBuffer fileContent = new StringBuffer("");
-//		FileInputStream fis = null;
-//		try {
-//			fis = openFileInput(saveFileName);
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			//e.printStackTrace();
-//		}
-//		byte[] buffer = new byte[1024];
-//		try {
-//			while ((fis.read(buffer))!=-1){
-//				fileContent.append(new String(buffer));
-//			}
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//
-//			e.printStackTrace();
-//		}
-//		stringOfContents = new String(fileContent);
-//
-//		Log.i("ToudoidINFO", "stringOfContents apres lecture fichier : " + stringOfContents);
-//		
-//		// initialisation des groupes de taches
-//		groupes = new ArrayList<Group>();
-//		if(stringOfContents==""){
-//			Group groupeGeneral = new Group("General");
-//			ArrayList<Task> donnees = new ArrayList<Task>();
-//			for (int x = 1; x < 5; x++) {
-//				donnees.add(new Task(groupeGeneral, "Tache " + x));
-//			}
-//			groupeGeneral.setObjets(donnees);
-//			groupes.add(groupeGeneral);
-//		}
-//		else stringToGroupes();
