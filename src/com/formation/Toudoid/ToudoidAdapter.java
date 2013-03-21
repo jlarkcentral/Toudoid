@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,22 +24,22 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 	private Context context;
 	private ArrayList<Group> groupes;
 	private LayoutInflater inflater;
-	
+
 	public ToudoidAdapter(Context context, ArrayList<Group> groupes) {
 		this.context = context;
 		this.groupes = groupes;
 		inflater = LayoutInflater.from(context);
 	}
-	
+
 	public Context getContext(){
 		return context;
 	}
-	
+
 	@Override
 	public boolean areAllItemsEnabled() {
 		return true;
 	}
-	
+
 	public Object getChild(int gPosition, int cPosition) {
 		return groupes.get(gPosition).getObjets().get(cPosition);
 	}
@@ -49,25 +50,33 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 		final Task objet = (Task) getChild(groupPosition, childPosition);
-		
-		ChildViewHolder childViewHolder;
-		
-        if (convertView == null) {
-        	childViewHolder = new ChildViewHolder();
-        	
-            convertView = inflater.inflate(R.layout.task_view, null);
-            
-            childViewHolder.taskCheckBox = (CheckBox) convertView.findViewById(R.id.taskCB);
-            
-            convertView.setTag(childViewHolder);
-        } else {
-        	childViewHolder = (ChildViewHolder) convertView.getTag();
-        }
-        
-        childViewHolder.taskCheckBox.setText(objet.getNom());
-        
-        
-        return convertView;
+
+		final ChildViewHolder childViewHolder;
+
+		if (convertView == null) {
+			childViewHolder = new ChildViewHolder();
+
+			convertView = inflater.inflate(R.layout.task_view, null);
+
+			childViewHolder.taskCheckBox = (CheckBox) convertView.findViewById(R.id.taskCB);
+
+			convertView.setTag(childViewHolder);
+		} else {
+			childViewHolder = (ChildViewHolder) convertView.getTag();
+		}
+
+		childViewHolder.taskCheckBox.setText(objet.getNom());
+		childViewHolder.taskCheckBox.setChecked(objet.isChecked());
+		childViewHolder.taskCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			public void onCheckedChanged(CompoundButton button, boolean check) {
+				// TODO Auto-generated method stub
+				objet.setChecked(check);
+//				childViewHolder.taskCheckBox.setChecked(check);
+			}
+		});
+
+		return convertView;
 	}
 
 	public int getChildrenCount(int gPosition) {
@@ -88,71 +97,71 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 
 	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 		GroupViewHolder gholder;
-		
+
 		final Group group = (Group) getGroup(groupPosition);
-		
-        if (convertView == null) {
-        	gholder = new GroupViewHolder();
-        	
-        	convertView = inflater.inflate(R.layout.header_view, null);
-        	
-        	gholder.textViewGroup = (TextView) convertView.findViewById(R.id.TVGroup);
-        	gholder.buttonGroup = (Button) convertView.findViewById(R.id.Button_add);
-        	///
-        	gholder.buttonGroup.setOnClickListener(new View.OnClickListener()
-    		{
 
-    			public void onClick(View v) {
-    				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-    						context);
+		if (convertView == null) {
+			gholder = new GroupViewHolder();
 
-    				// set title
-    				alertDialogBuilder.setTitle("Add a task");
+			convertView = inflater.inflate(R.layout.header_view, null);
 
-    				final EditText input = new EditText(context);
-    	 			
-    				// set dialog message
-    				alertDialogBuilder
-    				.setView(input)
-    				.setCancelable(false)
-    				.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
-    					public void onClick(DialogInterface dialog,int id) {
-    						String newTaskName = input.getText().toString();
-    						if (newTaskName!=""){
-    							Task newTask = new Task(group,newTaskName);
-    							group.addTask(newTask);
-    							notifyDataSetChanged();
-    							return;
-    						}
-    						else dialog.cancel();
-    						
-    					}
-    				})
-    				.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
-    					public void onClick(DialogInterface dialog,int id) {
-    						// if this button is clicked, just close
-    						// the dialog box and do nothing
-    						dialog.cancel();
-    					}
-    				});
+			gholder.textViewGroup = (TextView) convertView.findViewById(R.id.TVGroup);
+			gholder.buttonGroup = (Button) convertView.findViewById(R.id.Button_add);
+			///
+			gholder.buttonGroup.setOnClickListener(new View.OnClickListener()
+			{
 
-    				// create alert dialog
-    				AlertDialog alertDialog = alertDialogBuilder.create();
+				public void onClick(View v) {
+					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+							context);
 
-    				// show it
-    				alertDialog.show();
-    			}
-    		});
-        	
-        	////
-        	convertView.setTag(gholder);
-        } else {
-        	gholder = (GroupViewHolder) convertView.getTag();
-        }
-        
-        gholder.textViewGroup.setText(group.getNom());
-        
-        return convertView;
+					// set title
+					alertDialogBuilder.setTitle("Add a task");
+
+					final EditText input = new EditText(context);
+
+					// set dialog message
+					alertDialogBuilder
+					.setView(input)
+					.setCancelable(false)
+					.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,int id) {
+							String newTaskName = input.getText().toString();
+							if (newTaskName!=""){
+								Task newTask = new Task(group,newTaskName,false);
+								group.addTask(newTask);
+								notifyDataSetChanged();
+								return;
+							}
+							else dialog.cancel();
+
+						}
+					})
+					.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,int id) {
+							// if this button is clicked, just close
+							// the dialog box and do nothing
+							dialog.cancel();
+						}
+					});
+
+					// create alert dialog
+					AlertDialog alertDialog = alertDialogBuilder.create();
+
+					// show it
+					alertDialog.show();
+				}
+			});
+
+			////
+			convertView.setTag(gholder);
+		} else {
+			gholder = (GroupViewHolder) convertView.getTag();
+		}
+
+		gholder.textViewGroup.setText(group.getNom());
+
+		return convertView;
 	}
 
 	public boolean hasStableIds() {
@@ -162,12 +171,12 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 	public boolean isChildSelectable(int arg0, int arg1) {
 		return true;
 	}
-	
+
 	class GroupViewHolder {
 		public TextView textViewGroup;
 		public Button buttonGroup;
 	}
-	
+
 	class ChildViewHolder {
 		public CheckBox taskCheckBox;
 		//public Button buttonChild;

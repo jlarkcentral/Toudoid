@@ -1,6 +1,16 @@
 package com.formation.Toudoid;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import com.formation.Toudoid.R;
 
@@ -20,12 +30,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 
+/*
+ * Classe de l activité principale
+ */
 public class ToudoidActivity extends Activity {
 
+	private static final String TAG = ToudoidActivity.class.getName();
 	private ExpandableListView expandableList = null;
 	private ToudoidAdapter adapter = null;
 	private Button addGroupButton; 
 	final Context context = this;
+	ArrayList<Group> groupes = new ArrayList<Group>();;
+	String saveFileName = "toudoidSave.txt";
+	String stringOfContents = "";
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -35,18 +53,28 @@ public class ToudoidActivity extends Activity {
 		expandableList = (ExpandableListView) findViewById(R.id.expandableView);
 
 
-		final ArrayList<Group> groupes = new ArrayList<Group>();
-		Group groupe = new Group("General");
-		ArrayList<Task> donnees = new ArrayList<Task>();
-		for (int x = 1; x < 5; x++) {
-			donnees.add(new Task(groupe, "Tache " + x));
+		// comm en bas supprimés ici
+
+
+
+
+		File saveFile = getBaseContext().getFileStreamPath(saveFileName);
+		if(!saveFile.exists()){
+			Log.i("ToudoidINFO", "toudoidSave DOES NOT exists");
+			writeToFile("");
 		}
-		groupe.setObjets(donnees);
-		groupes.add(groupe);
-	
-		
+		else{ 
+			Log.i("ToudoidINFO", "toudoidSave exists");
+
+			stringOfContents = readFromFile();
+			stringToGroupes();
+			//			Log.i("toudoidINFO", "groupe 1 : "+groupes.toString());
+
+		}
+
 		adapter = new ToudoidAdapter(this,groupes);
 		expandableList.setAdapter(adapter);
+		adapter.notifyDataSetChanged();
 
 		addGroupButton = (Button) findViewById(R.id.Button_addGroup);
 		//Log.i("Toudoid", addTaskButton.toString());
@@ -55,81 +83,240 @@ public class ToudoidActivity extends Activity {
 		{
 
 			public void onClick(View v) {
-				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-						context);
+				showAddGroupDialog();
+			}
+		});
+	}
 
-				// set title
-				alertDialogBuilder.setTitle("Add a group");
+	public void showAddGroupDialog(){
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				context);
 
-				final EditText input = new EditText(context);
-				
-				// set dialog message
-				alertDialogBuilder
-				//.setMessage("")
-				.setView(input)
-				.setCancelable(false)
-				.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-				
-						String newGroupName = input.getText().toString();
-						if (newGroupName!=""){
-							Group newGroup = new Group(newGroupName);
-							groupes.add(newGroup);
-							adapter.notifyDataSetChanged();
-							if(false){
-								//pouet
-							}
-							return;
-						}
-						else dialog.cancel();
-					}
-				})
-				.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-						// if this button is clicked, just close
-						// the dialog box and do nothing
-						dialog.cancel();
-					}
-				});
+		// set title
+		alertDialogBuilder.setTitle("Add a group");
 
-				// create alert dialog
-				AlertDialog alertDialog = alertDialogBuilder.create();
+		final EditText input = new EditText(context);
 
-				// show it
-				alertDialog.show();
+		// set dialog message
+		alertDialogBuilder
+		//.setMessage("")
+		.setView(input)
+		.setCancelable(false)
+		.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog,int id) {
+
+				String newGroupName = input.getText().toString();
+				if (newGroupName!=""){
+					Group newGroup = new Group(newGroupName);
+					groupes.add(newGroup);
+					adapter.notifyDataSetChanged();
+
+					return;
+				}
+				else dialog.cancel();
+			}
+		})
+		.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog,int id) {
+				// if this button is clicked, just close
+				// the dialog box and do nothing
+				dialog.cancel();
 			}
 		});
 
-				
+		// create alert dialog
+		AlertDialog alertDialog = alertDialogBuilder.create();
+
+		// show it
+		alertDialog.show();
 	}
-	
-	public void onResume() {
-		super.onResume();
-		adapter.notifyDataSetChanged(); // refresh..
-	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.menu_toudoid, menu);
-	    return true;
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu_toudoid, menu);
+		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
-	    switch (item.getItemId()) {
-	        case R.id.addGroupItemMenu:
-	            //
-	            return true;
-	        case R.id.DevRedItemMenu:
-	            //
-	            return true;
-	        case R.id.deleteAllItemMenu:
-	            //
-	            return true;    
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.addGroupItemMenu:
+			showAddGroupDialog();
+			return true;
+		case R.id.DevRedItemMenu:
+			//expandableList.collapseGroup();
+			return true;
+		case R.id.deleteAllItemMenu:
+			groupes = new ArrayList<Group>();
+			adapter.notifyDataSetChanged();
+			return true;    
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
+
+	public void stringToGroupes(){
+		Log.i("ToudoidINFO", "stringToGroupes start");
+		Log.i("ToudoidINFO", "stringOfContents in stringToGroup :" + stringOfContents);
+		groupes = new ArrayList<Group>();	
+		Scanner scanner = new Scanner(stringOfContents);
+		Log.i("ToudoidINFO", "stringOfContents in stringToGroup SCANNER:" + stringOfContents);
+		Group newGroup=null;
+		Task newTask;
+		while(scanner.hasNextLine()){
+			String line = scanner.nextLine();
+			Log.i("ToudoidINFO", "Scanner next line :" + line);
+			Log.i("ToudoidINFO", "Scanner next line PREFIX :" + line.substring(0, 2));
+			if(line.substring(0, 2).equals("#G")){
+				Log.i("ToudoidINFO", "GROUP DETECTED : " + line);
+				newGroup = new Group(line.substring(2, line.length()));
+				groupes.add(newGroup);
+			}
+			if(line.substring(0, 2).equals("#T")){
+				Log.i("ToudoidINFO", "TASK DETECTED : " + line);
+				boolean check = (line.substring(2, 3).equals("X"));
+				Log.i("ToudoidINFO", "line.substring(2, 3) :" + line.substring(2, 3));
+				newTask = new Task(newGroup,line.substring(3, line.length()),check);
+				newGroup.addTask(newTask);
+			}
+		}
+	}
+
+	public void groupesToString(){
+		stringOfContents = "";
+		for (int i = 0 ; i < groupes.size() ; i++){
+			stringOfContents += "#G" + groupes.get(i).getNom();
+			stringOfContents += '\n';
+			ArrayList<Task> tasklist = groupes.get(i).getObjets();
+			for (int j = 0 ; j < tasklist.size() ; j++){
+				Task t = tasklist.get(j);
+				if(t.isChecked()){
+					stringOfContents += "#TX"+t.getNom();
+				}
+				else {
+					stringOfContents += "#TO"+t.getNom();
+				}
+				stringOfContents += '\n';
+			}
+		}
+		Log.i("ToudoidINFO", "stringOfContents in groupesToString :" + stringOfContents);
+	}
+
+	public void writeToFile(String data){
+		try {
+			Log.i("ToudoidINFO", "stringOfContents in writeToFile :" + data);
+			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput(saveFileName, Context.MODE_PRIVATE));
+			String output = String.format(data, System.getProperty("line.separator"));
+			outputStreamWriter.write(output);
+			outputStreamWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public String readFromFile() {
+
+		String ret = "";
+
+		try {
+			InputStream inputStream = openFileInput(saveFileName);
+
+			if ( inputStream != null ) {
+				InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+				String receiveString = "";
+				StringBuilder stringBuilder = new StringBuilder();
+
+				while ( (receiveString = bufferedReader.readLine()) != null ) {
+					stringBuilder.append(receiveString);
+					stringBuilder.append('\n');
+				}
+
+				inputStream.close();
+				ret = stringBuilder.toString();
+			}
+		}
+		catch (FileNotFoundException e) {
+			Log.e(TAG, "File not found: " + e.toString());
+		} catch (IOException e) {
+			Log.e(TAG, "Can not read file: " + e.toString());
+		}
+
+		return ret;
+	}
+
+	@Override
+	public void onPause(){
+		groupesToString();
+		Log.i("ToudoidINFO", "stringOfContents onPause" + stringOfContents);
+		writeToFile(stringOfContents);
+		super.onPause();
+	}
+
+	//	@Override
+	//	public void onResume() {
+	//		
+	//		stringOfContents = readFromFile();
+	//		Log.i("ToudoidINFO", "stringOfContents onResume :" + stringOfContents);
+	//		stringToGroupes();
+	//		adapter.notifyDataSetChanged(); // refresh..
+	//		super.onResume();
+	//	}
 }
+
+
+
+
+// ouverture ou creation du fichier de sauvegarde
+//		File saveFile = new File("toudoidSave");
+//		if(!saveFile.exists()){
+//			try {
+//				Log.i("ToudoidINFO", "toudoidSave exists");
+//				saveFile.createNewFile();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		else Log.i("ToudoidINFO", "toudoidSave exists");
+//		
+//		Log.i("ToudoidINFO", "stringOfContents initial : " + stringOfContents);
+//
+//		// copie du fichier de sauvegarde dans une String
+//		StringBuffer fileContent = new StringBuffer("");
+//		FileInputStream fis = null;
+//		try {
+//			fis = openFileInput(saveFileName);
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			//e.printStackTrace();
+//		}
+//		byte[] buffer = new byte[1024];
+//		try {
+//			while ((fis.read(buffer))!=-1){
+//				fileContent.append(new String(buffer));
+//			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//
+//			e.printStackTrace();
+//		}
+//		stringOfContents = new String(fileContent);
+//
+//		Log.i("ToudoidINFO", "stringOfContents apres lecture fichier : " + stringOfContents);
+//		
+//		// initialisation des groupes de taches
+//		groupes = new ArrayList<Group>();
+//		if(stringOfContents==""){
+//			Group groupeGeneral = new Group("General");
+//			ArrayList<Task> donnees = new ArrayList<Task>();
+//			for (int x = 1; x < 5; x++) {
+//				donnees.add(new Task(groupeGeneral, "Tache " + x));
+//			}
+//			groupeGeneral.setObjets(donnees);
+//			groupes.add(groupeGeneral);
+//		}
+//		else stringToGroupes();

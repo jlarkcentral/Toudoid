@@ -4,11 +4,13 @@ public class Task {
 
 	private Group groupe;
 	private String nom;
+	private boolean isChecked;
 
-	public Task(Group groupe, String nom) {
+	public Task(Group groupe, String nom, boolean check) {
 		super();
 		this.groupe = groupe;
 		this.nom = nom;
+		this.isChecked = check;
 	}
 
 	public Group getGroupe() {
@@ -25,6 +27,14 @@ public class Task {
 
 	public void setNom(String nom) {
 		this.nom = nom;
+	}
+	
+	public boolean isChecked() {
+		return isChecked;
+	}
+	
+	public void setChecked(boolean c) {
+		isChecked = c;
 	}
 
 }
