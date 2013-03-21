@@ -149,9 +149,12 @@ public class ToudoidActivity extends Activity {
 			}
 			return true;
 		case R.id.deleteAllItemMenu:
-			groupes = new ArrayList<Group>();
+			groupes.clear();
+//			groupes = new ArrayList<Group>();
+			stringOfContents ="";
+			expandableList = new ExpandableListView(context);
 			adapter.notifyDataSetChanged();
-			return true;    
+			return true;  
 		default:
 			return super.onOptionsItemSelected(item);
 		}
