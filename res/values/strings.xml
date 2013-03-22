@@ -2,7 +2,7 @@
 <resources>
     <string name="hello">Hello World</string>
     <string name="app_name">Toudoid</string>
-    <string name="ButtonAdd">Add Task</string>
+    <string name="ButtonAdd"></string>
     <string name="ButtonAddGroup">Add Group</string>
     <string name="deleteAll">Delete All</string>
     <string name="DevRed">Display</string>

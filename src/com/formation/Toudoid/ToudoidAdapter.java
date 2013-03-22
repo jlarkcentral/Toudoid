@@ -16,16 +16,17 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class ToudoidAdapter extends BaseExpandableListAdapter {
 
-	private Context context;
+	private ToudoidActivity context;
 	private ArrayList<Group> groupes;
 	private LayoutInflater inflater;
 
-	public ToudoidAdapter(Context context, ArrayList<Group> groupes) {
+	public ToudoidAdapter(ToudoidActivity context, ArrayList<Group> groupes) {
 		this.context = context;
 		this.groupes = groupes;
 		inflater = LayoutInflater.from(context);
@@ -72,7 +73,11 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 			public void onCheckedChanged(CompoundButton button, boolean check) {
 				// TODO Auto-generated method stub
 				objet.setChecked(check);
-//				childViewHolder.taskCheckBox.setChecked(check);
+				
+//				context.groupesToString();
+//				context.writeToFile(context.stringOfContents);
+//				context.stringToGroupes();
+				//				childViewHolder.taskCheckBox.setChecked(check);
 			}
 		});
 
@@ -95,7 +100,7 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 		return gPosition;
 	}
 
-	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+	public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 		GroupViewHolder gholder;
 
 		final Group group = (Group) getGroup(groupPosition);
@@ -104,6 +109,7 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 			gholder = new GroupViewHolder();
 
 			convertView = inflater.inflate(R.layout.header_view, null);
+			//			final View mainView = inflater.inflate(R.layout.main, null);
 
 			gholder.textViewGroup = (TextView) convertView.findViewById(R.id.TVGroup);
 			gholder.buttonGroup = (Button) convertView.findViewById(R.id.Button_add);
@@ -112,6 +118,12 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 			{
 
 				public void onClick(View v) {
+					//					final ExpandableListView expandableList;
+					//					expandableList = (ExpandableListView) mainView.findViewById(R.id.expandableView);
+					//expandableList.expandGroup(groupPosition);
+
+					context.expandableList.expandGroup(groupPosition);
+					
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 							context);
 
@@ -127,10 +139,12 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 					.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,int id) {
 							String newTaskName = input.getText().toString();
-							if (newTaskName!=""){
+							if (!newTaskName.equals("")){
 								Task newTask = new Task(group,newTaskName,false);
 								group.addTask(newTask);
 								notifyDataSetChanged();
+
+								//								expandableList.expandGroup(groupPosition);
 								return;
 							}
 							else dialog.cancel();
@@ -179,6 +193,7 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 
 	class ChildViewHolder {
 		public CheckBox taskCheckBox;
+		//		public boolean state;
 		//public Button buttonChild;
 	}
 

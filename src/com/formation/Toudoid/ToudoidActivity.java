@@ -33,7 +33,7 @@ import android.widget.ExpandableListView;
 public class ToudoidActivity extends Activity {
 
 	private static final String TAG = ToudoidActivity.class.getName();
-	private ExpandableListView expandableList = null;
+	public ExpandableListView expandableList = null;
 	private ToudoidAdapter adapter = null;
 	private Button addGroupButton; 
 	final Context context = this;
@@ -61,7 +61,12 @@ public class ToudoidActivity extends Activity {
 			stringToGroupes();
 
 		}
-
+		String out = "";
+		for (int i = 0;i<groupes.size();i++){
+			out += groupes.get(i).toString();
+		}
+		Log.i("ToudoidFILE", out);
+		
 		adapter = new ToudoidAdapter(this,groupes);
 		expandableList.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
@@ -72,6 +77,7 @@ public class ToudoidActivity extends Activity {
 		{
 
 			public void onClick(View v) {
+
 				showAddGroupDialog();
 			}
 		});
@@ -135,7 +141,7 @@ public class ToudoidActivity extends Activity {
 			showAddGroupDialog();
 			return true;
 		case R.id.DevRedItemMenu:
-//			boolean totallyCollapsed=false;
+			//			boolean totallyCollapsed=false;
 			for(int j=0;j<groupes.size();j++){
 				if (expandableList.isGroupExpanded(j)){
 					for(int i=0;i<groupes.size();i++){
@@ -150,8 +156,8 @@ public class ToudoidActivity extends Activity {
 			return true;
 		case R.id.deleteAllItemMenu:
 			groupes.clear();
-//			groupes = new ArrayList<Group>();
 			stringOfContents ="";
+			writeToFile("");
 			expandableList = new ExpandableListView(context);
 			adapter.notifyDataSetChanged();
 			return true;  
@@ -161,26 +167,26 @@ public class ToudoidActivity extends Activity {
 	}
 
 	public void stringToGroupes(){
-		Log.i("ToudoidINFO", "stringToGroupes start");
-		Log.i("ToudoidINFO", "stringOfContents in stringToGroup :" + stringOfContents);
+//		Log.i("ToudoidINFO", "stringToGroupes start");
+//		Log.i("ToudoidINFO", "stringOfContents in stringToGroup :" + stringOfContents);
 		groupes = new ArrayList<Group>();	
 		Scanner scanner = new Scanner(stringOfContents);
-		Log.i("ToudoidINFO", "stringOfContents in stringToGroup SCANNER:" + stringOfContents);
+//		Log.i("ToudoidINFO", "stringOfContents in stringToGroup SCANNER:" + stringOfContents);
 		Group newGroup=null;
 		Task newTask;
 		while(scanner.hasNextLine()){
 			String line = scanner.nextLine();
-			Log.i("ToudoidINFO", "Scanner next line :" + line);
-			Log.i("ToudoidINFO", "Scanner next line PREFIX :" + line.substring(0, 2));
+//			Log.i("ToudoidINFO", "Scanner next line :" + line);
+//			Log.i("ToudoidINFO", "Scanner next line PREFIX :" + line.substring(0, 2));
 			if(line.substring(0, 2).equals("#G")){
-				Log.i("ToudoidINFO", "GROUP DETECTED : " + line);
+//				Log.i("ToudoidINFO", "GROUP DETECTED : " + line);
 				newGroup = new Group(line.substring(2, line.length()));
 				groupes.add(newGroup);
 			}
 			if(line.substring(0, 2).equals("#T")){
-				Log.i("ToudoidINFO", "TASK DETECTED : " + line);
+//				Log.i("ToudoidINFO", "TASK DETECTED : " + line);
 				boolean check = (line.substring(2, 3).equals("X"));
-				Log.i("ToudoidINFO", "line.substring(2, 3) :" + line.substring(2, 3));
+//				Log.i("ToudoidINFO", "line.substring(2, 3) :" + line.substring(2, 3));
 				newTask = new Task(newGroup,line.substring(3, line.length()),check);
 				newGroup.addTask(newTask);
 			}

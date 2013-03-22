@@ -31,5 +31,15 @@ public class Group {
 	public void addTask(Task t) {
 		objets.add(t);
 	}
+	
+	public String toString(){
+		String s = "";
+		s += "Groupe : " + nom + "\n";
+		for (int i=0 ; i<objets.size() ; i++){
+			s += "tache : " + i + " : " + objets.get(i).getNom() + ", " + (objets.get(i).isChecked()) + "\n";
+			
+		}
+		return s;
+	}
 
 }
