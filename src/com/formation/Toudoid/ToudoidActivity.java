@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 
@@ -51,8 +52,10 @@ public class ToudoidActivity extends Activity {
 		setContentView(R.layout.main);
 
 		expandableList = (ExpandableListView) findViewById(R.id.expandableView);
-		registerForContextMenu(expandableList);
+//		registerForContextMenu(expandableList);
 
+//		registerForContextMenu(findViewById(R.id.taskCB));
+		
 		// Lecture ou creation du fichier de sauvegarde
 		File saveFile = getBaseContext().getFileStreamPath(saveFileName);
 		if(!saveFile.exists()){
@@ -163,6 +166,9 @@ public class ToudoidActivity extends Activity {
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		
+		Log.i("INFO", "view du contextmenu : "+v.toString());
+		
 	    super.onCreateContextMenu(menu, v, menuInfo);
 	    MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.context_menu, menu);
@@ -171,6 +177,7 @@ public class ToudoidActivity extends Activity {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	    
 	    switch (item.getItemId()) {
 	        case R.id.addTaskItemMenu:
 	            //editNote(info.id);
