@@ -49,35 +49,33 @@ public class ToudoidActivity extends Activity {
 
 		expandableList = (ExpandableListView) findViewById(R.id.expandableView);
 
+		// Lecture ou creation du fichier de sauvegarde
 		File saveFile = getBaseContext().getFileStreamPath(saveFileName);
 		if(!saveFile.exists()){
-			Log.i("ToudoidINFO", "toudoidSave DOES NOT exists");
 			writeToFile("");
 		}
-		else{ 
-			Log.i("ToudoidINFO", "toudoidSave exists");
-
+		else{
 			stringOfContents = readFromFile();
 			stringToGroupes();
-
 		}
+
+		// affichage pratique : contenu du fichier de sauvegarde
 		String out = "";
 		for (int i = 0;i<groupes.size();i++){
 			out += groupes.get(i).toString();
 		}
 		Log.i("ToudoidFILE", out);
 		
+		// initialisation de l'adapter
 		adapter = new ToudoidAdapter(this,groupes);
 		expandableList.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 
+		// bouton d'ajout de groupe (en bas de l ecran)
 		addGroupButton = (Button) findViewById(R.id.Button_addGroup);
-
 		addGroupButton.setOnClickListener(new View.OnClickListener()
 		{
-
 			public void onClick(View v) {
-
 				showAddGroupDialog();
 			}
 		});
@@ -87,22 +85,21 @@ public class ToudoidActivity extends Activity {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 				context);
 
-		// set title
 		alertDialogBuilder.setTitle("Add a group");
-
 		final EditText input = new EditText(context);
-
-		// set dialog message
 		alertDialogBuilder
-		//.setMessage("")
 		.setView(input)
 		.setCancelable(false)
 		.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog,int id) {
 
 				String newGroupName = input.getText().toString();
-				if (newGroupName!=""){
+				if (!newGroupName.equals("")){
+					// set title
 					Group newGroup = new Group(newGroupName);
+					// ajout d'une fausse tache pour le premier element du groupe
+					newGroup.addTask(new Task(newGroup,"buttonBottom",false));
+					
 					groupes.add(newGroup);
 					adapter.notifyDataSetChanged();
 
@@ -113,16 +110,11 @@ public class ToudoidActivity extends Activity {
 		})
 		.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog,int id) {
-				// if this button is clicked, just close
-				// the dialog box and do nothing
 				dialog.cancel();
 			}
 		});
 
-		// create alert dialog
 		AlertDialog alertDialog = alertDialogBuilder.create();
-
-		// show it
 		alertDialog.show();
 	}
 
@@ -141,7 +133,6 @@ public class ToudoidActivity extends Activity {
 			showAddGroupDialog();
 			return true;
 		case R.id.DevRedItemMenu:
-			//			boolean totallyCollapsed=false;
 			for(int j=0;j<groupes.size();j++){
 				if (expandableList.isGroupExpanded(j)){
 					for(int i=0;i<groupes.size();i++){
@@ -167,26 +158,22 @@ public class ToudoidActivity extends Activity {
 	}
 
 	public void stringToGroupes(){
-//		Log.i("ToudoidINFO", "stringToGroupes start");
-//		Log.i("ToudoidINFO", "stringOfContents in stringToGroup :" + stringOfContents);
-		groupes = new ArrayList<Group>();	
+		groupes = new ArrayList<Group>();
 		Scanner scanner = new Scanner(stringOfContents);
-//		Log.i("ToudoidINFO", "stringOfContents in stringToGroup SCANNER:" + stringOfContents);
 		Group newGroup=null;
 		Task newTask;
+		// parsage de la String decrivant le modele pour construire le modele
 		while(scanner.hasNextLine()){
 			String line = scanner.nextLine();
-//			Log.i("ToudoidINFO", "Scanner next line :" + line);
-//			Log.i("ToudoidINFO", "Scanner next line PREFIX :" + line.substring(0, 2));
 			if(line.substring(0, 2).equals("#G")){
-//				Log.i("ToudoidINFO", "GROUP DETECTED : " + line);
 				newGroup = new Group(line.substring(2, line.length()));
+				// ajout d'une fausse tache pour le premier element du groupe
+				newGroup.addTask(new Task(newGroup,"bottomButton",false));
+				
 				groupes.add(newGroup);
 			}
 			if(line.substring(0, 2).equals("#T")){
-//				Log.i("ToudoidINFO", "TASK DETECTED : " + line);
 				boolean check = (line.substring(2, 3).equals("X"));
-//				Log.i("ToudoidINFO", "line.substring(2, 3) :" + line.substring(2, 3));
 				newTask = new Task(newGroup,line.substring(3, line.length()),check);
 				newGroup.addTask(newTask);
 			}
@@ -199,7 +186,7 @@ public class ToudoidActivity extends Activity {
 			stringOfContents += "#G" + groupes.get(i).getNom();
 			stringOfContents += '\n';
 			ArrayList<Task> tasklist = groupes.get(i).getObjets();
-			for (int j = 0 ; j < tasklist.size() ; j++){
+			for (int j = 1 ; j < tasklist.size(); j++){
 				Task t = tasklist.get(j);
 				if(t.isChecked()){
 					stringOfContents += "#TX"+t.getNom();
@@ -210,12 +197,10 @@ public class ToudoidActivity extends Activity {
 				stringOfContents += '\n';
 			}
 		}
-		Log.i("ToudoidINFO", "stringOfContents in groupesToString :" + stringOfContents);
 	}
 
 	public void writeToFile(String data){
 		try {
-			Log.i("ToudoidINFO", "stringOfContents in writeToFile :" + data);
 			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput(saveFileName, Context.MODE_PRIVATE));
 			String output = String.format(data, System.getProperty("line.separator"));
 			outputStreamWriter.write(output);
@@ -227,12 +212,9 @@ public class ToudoidActivity extends Activity {
 	}
 
 	public String readFromFile() {
-
 		String ret = "";
-
 		try {
 			InputStream inputStream = openFileInput(saveFileName);
-
 			if ( inputStream != null ) {
 				InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -253,14 +235,12 @@ public class ToudoidActivity extends Activity {
 		} catch (IOException e) {
 			Log.e(TAG, "Can not read file: " + e.toString());
 		}
-
 		return ret;
 	}
 
 	@Override
 	public void onPause(){
 		groupesToString();
-		Log.i("ToudoidINFO", "stringOfContents onPause" + stringOfContents);
 		writeToFile(stringOfContents);
 		super.onPause();
 	}
