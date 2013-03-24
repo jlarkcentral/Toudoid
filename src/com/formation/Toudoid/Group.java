@@ -42,4 +42,13 @@ public class Group {
 		return s;
 	}
 
+	public int howManyChecked(){
+		int checked = 0;
+		for(int i = 1 ; i < objets.size() ; i++){
+			if (objets.get(i).isChecked()){
+				checked++;
+			}
+		}
+		return checked;
+	}
 }
