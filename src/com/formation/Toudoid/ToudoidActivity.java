@@ -22,10 +22,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -48,6 +51,7 @@ public class ToudoidActivity extends Activity {
 		setContentView(R.layout.main);
 
 		expandableList = (ExpandableListView) findViewById(R.id.expandableView);
+		registerForContextMenu(expandableList);
 
 		File saveFile = getBaseContext().getFileStreamPath(saveFileName);
 		if(!saveFile.exists()){
@@ -164,6 +168,30 @@ public class ToudoidActivity extends Activity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+	    super.onCreateContextMenu(menu, v, menuInfo);
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.context_menu, menu);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	    switch (item.getItemId()) {
+	        case R.id.addTaskItemMenu:
+	            //editNote(info.id);
+	            return true;
+	        case R.id.editGroupNameItemMenu:
+	            //deleteNote(info.id);
+	            return true;
+	        case R.id.deleteGroupItemMenu:
+	        	return true;
+	        default:
+	            return super.onContextItemSelected(item);
+	    }
 	}
 
 	public void stringToGroupes(){

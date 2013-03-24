@@ -6,4 +6,7 @@
     <string name="ButtonAddGroup">Add Group</string>
     <string name="deleteAll">Delete All</string>
     <string name="DevRed">Display</string>
+    <string name="AddTask">Add a Task</string>
+    <string name="EditGroupName">Edit Group Name</string>
+    <string name="DeleteGroup">Delete Group</string>
 </resources>
