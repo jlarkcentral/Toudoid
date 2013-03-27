@@ -52,6 +52,14 @@ public class ToudoidActivity extends Activity {
 		setContentView(R.layout.main);
 
 		expandableList = (ExpandableListView) findViewById(R.id.expandableView);
+//		expandableList.setOnChildClickListener(new ExpandableListView.OnChildClickListener()
+//		{
+//			public boolean onChildClick(ExpandableListView elv,View v, int i, int j, long l) {
+//				showAddGroupDialog();
+//				return false;
+//			}
+//		});
+		
 //		registerForContextMenu(expandableList);
 
 //		registerForContextMenu(findViewById(R.id.taskCB));
@@ -76,6 +84,7 @@ public class ToudoidActivity extends Activity {
 		// initialisation de l'adapter
 		adapter = new ToudoidAdapter(this,groupes);
 		expandableList.setAdapter(adapter);
+		registerForContextMenu(expandableList);
 		adapter.notifyDataSetChanged();
 
 		// bouton d'ajout de groupe (en bas de l ecran)
@@ -169,6 +178,11 @@ public class ToudoidActivity extends Activity {
 		
 		Log.i("INFO", "view du contextmenu : "+v.toString());
 		
+		ExpandableListView.ExpandableListContextMenuInfo expinfo =
+				(ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
+		
+		Log.i("INFO", "getPackedPositionType : "+ ExpandableListView.getPackedPositionType(expinfo.packedPosition));
+		
 	    super.onCreateContextMenu(menu, v, menuInfo);
 	    MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.context_menu, menu);
@@ -177,7 +191,8 @@ public class ToudoidActivity extends Activity {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	    
+	    Log.i("MENUINFO", info.toString());
+	    Log.i("MENUINFO", Integer.toString((int) info.id));
 	    switch (item.getItemId()) {
 	        case R.id.addTaskItemMenu:
 	            //editNote(info.id);
