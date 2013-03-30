@@ -93,7 +93,7 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 				convertView = inflater.inflate(R.layout.task_view, null);
 				childViewHolder.taskCheckBox = (CheckBox) convertView.findViewById(R.id.taskCB);
 				
-				context.registerForContextMenu(childViewHolder.taskCheckBox);
+				//context.registerForContextMenu(childViewHolder.taskCheckBox);
 				
 				convertView.setTag(childViewHolder);
 //			} else {

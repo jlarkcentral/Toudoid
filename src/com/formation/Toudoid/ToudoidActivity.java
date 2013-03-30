@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -52,7 +53,7 @@ public class ToudoidActivity extends Activity {
 		setContentView(R.layout.main);
 
 		expandableList = (ExpandableListView) findViewById(R.id.expandableView);
-//		registerForContextMenu(expandableList);
+		//registerForContextMenu(expandableList);
 
 //		registerForContextMenu(findViewById(R.id.taskCB));
 		
@@ -77,6 +78,7 @@ public class ToudoidActivity extends Activity {
 		adapter = new ToudoidAdapter(this,groupes);
 		expandableList.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
+		registerForContextMenu(expandableList);
 
 		// bouton d'ajout de groupe (en bas de l ecran)
 		addGroupButton = (Button) findViewById(R.id.Button_addGroup);
@@ -167,17 +169,34 @@ public class ToudoidActivity extends Activity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		
-		Log.i("INFO", "view du contextmenu : "+v.toString());
+		//Log.i("INFO", "view du contextmenu : "+v.toString());
+		if (v.getId() == R.id.taskCB)
+		{ Log.i("TEST", "condition ok"); }
+		Log.i("TEST", "view du contextmenu : "+v.toString());
+	
+		
+		//AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		//Log.i("TEST", "info : "+info.toString());
+	    //String selectedWord = ((CheckBox) info.targetView).getText().toString();
+	    //int selectedWordId = (int) info.id;
+	    //Log.i("TEST", "selectedWord : "+selectedWord);
+	    //Log.i("TEST", "selectedWordId : "+selectedWordId);
 		
 	    super.onCreateContextMenu(menu, v, menuInfo);
+	    Log.i("TEST", "meunIndo : "+menuInfo.toString()); 
 	    MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.context_menu, menu);
+	    menu.setHeaderTitle("test");
+	    Log.i("TEST", "patate");
 	}
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	    
+		Log.i("TEST", "debut");
+	    //AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	    Log.i("TEST", "apresmenuinfo");
+	    //Log.i("TEST", "info :"+info.position);
+	    //Log.i("TEST", "view du selected : "+info.targetView.toString());
 	    switch (item.getItemId()) {
 	        case R.id.addTaskItemMenu:
 	            //editNote(info.id);
