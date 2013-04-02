@@ -121,7 +121,7 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 				context);
 
-		alertDialogBuilder.setTitle("Add a task");
+		alertDialogBuilder.setTitle("Add a task to '" + groupes.get(groupPosition).getNom() + "'");
 		final EditText input = new EditText(context);
 
 		alertDialogBuilder
@@ -134,6 +134,72 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 					Group currentGroup = groupes.get(groupPosition);
 					Task newTask = new Task(currentGroup,newTaskName,false);
 					currentGroup.addTask(newTask);
+					notifyDataSetChanged();
+					return;
+				}
+				else dialog.cancel();
+			}
+		})
+		.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog,int id) {
+				dialog.cancel();
+			}
+		});
+		// create alert dialog
+		AlertDialog alertDialog = alertDialogBuilder.create();
+		// show it
+		alertDialog.show();
+	}
+	
+	public void editTaskDialog(final int groupPosition, final int taskPosition){
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				context);
+
+		alertDialogBuilder.setTitle("Edit task");
+		final EditText input = new EditText(context);
+		input.setText(groupes.get(groupPosition).getObjets().get(taskPosition).getNom());
+
+		alertDialogBuilder
+		.setView(input)
+		.setCancelable(false)
+		.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog,int id) {
+				String taskName = input.getText().toString();
+				if (!taskName.equals("")){
+					groupes.get(groupPosition).getObjets().get(taskPosition).setNom(taskName);
+					notifyDataSetChanged();
+					return;
+				}
+				else dialog.cancel();
+			}
+		})
+		.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog,int id) {
+				dialog.cancel();
+			}
+		});
+		// create alert dialog
+		AlertDialog alertDialog = alertDialogBuilder.create();
+		// show it
+		alertDialog.show();
+	}
+	
+	public void editGroupDialog(final int groupPosition){
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				context);
+
+		alertDialogBuilder.setTitle("Edit group");
+		final EditText input = new EditText(context);
+		input.setText(groupes.get(groupPosition).getNom());
+
+		alertDialogBuilder
+		.setView(input)
+		.setCancelable(false)
+		.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog,int id) {
+				String groupName = input.getText().toString();
+				if (!groupName.equals("")){
+					groupes.get(groupPosition).setNom(groupName);
 					notifyDataSetChanged();
 					return;
 				}

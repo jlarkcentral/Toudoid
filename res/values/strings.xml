@@ -9,5 +9,21 @@
     <string name="AddTask">Add a Task</string>
     <string name="EditGroupName">Edit Group Name</string>
     <string name="DeleteGroup">Delete Group</string>
+    <string name="EditTaskName">Edit Task Name</string>
+    <string name="DeleteTask">Delete Task</string>
     <string name="buttonBottom">Add a task</string>
+    
+    <style name="ButtonText">
+    <item name="android:layout_width">fill_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">#ffffff</item>
+    <item name="android:gravity">center</item>
+    <item name="android:layout_margin">3dp</item>
+    <item name="android:textSize">30dp</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:shadowColor">#000000</item>
+    <item name="android:shadowDx">1</item>
+    <item name="android:shadowDy">1</item>
+    <item name="android:shadowRadius">2</item>
+	</style>
 </resources>

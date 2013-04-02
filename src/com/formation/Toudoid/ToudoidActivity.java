@@ -19,6 +19,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.LightingColorFilter;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -34,6 +36,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
+import android.widget.TextView;
 
 public class ToudoidActivity extends Activity {
 
@@ -97,6 +101,8 @@ public class ToudoidActivity extends Activity {
 				showAddGroupDialog();
 			}
 		});
+		//addGroupButton.getBackground().setColorFilter(new LightingColorFilter(0xFFFFFF, 0x00FF00));
+		//addGroupButton.setBackgroundColor(Color.RED);
 	}
 
 	public void showAddGroupDialog(){
@@ -177,52 +183,70 @@ public class ToudoidActivity extends Activity {
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		
-		//Log.i("INFO", "view du contextmenu : "+v.toString());
-		if (v.getId() == R.id.taskCB)
-		{ Log.i("TEST", "condition ok"); }
-		Log.i("TEST", "view du contextmenu : "+v.toString());
-	
-		
-		//AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-		//Log.i("TEST", "info : "+info.toString());
-	    //String selectedWord = ((CheckBox) info.targetView).getText().toString();
-	    //int selectedWordId = (int) info.id;
-	    //Log.i("TEST", "selectedWord : "+selectedWord);
-	    //Log.i("TEST", "selectedWordId : "+selectedWordId);
-		
 		ExpandableListView.ExpandableListContextMenuInfo expinfo =
 				(ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
+		int type =
+				ExpandableListView.getPackedPositionType(expinfo.packedPosition);
+		int group =
+				ExpandableListView.getPackedPositionGroup(expinfo.packedPosition);
+		int child =
+				ExpandableListView.getPackedPositionChild(expinfo.packedPosition);
+		//String selectedWord = 
+				//((TextView) expinfo.targetView).getText().toString();
 		
-		Log.i("INFO", "getPackedPositionType : "+ ExpandableListView.getPackedPositionType(expinfo.packedPosition));
+		Log.i("CONT", "Type : "+ type);
+		Log.i("CONT", "Group : "+ group);
+		Log.i("CONT", "Child : "+ child);
 		
 	    super.onCreateContextMenu(menu, v, menuInfo);
-	    Log.i("TEST", "meunIndo : "+menuInfo.toString()); 
 	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.context_menu, menu);
-	    menu.setHeaderTitle("test");
-	    Log.i("TEST", "patate");
+	    
+	    if (type == 0) {
+	    	inflater.inflate(R.menu.context_menu_group, menu);
+	    	menu.setHeaderTitle("Group " + groupes.get(group).getNom());
+	    }
+	    
+	    if (type == 1) {
+	    	inflater.inflate(R.menu.context_menu_task, menu);
+	    	menu.setHeaderTitle("Task " + groupes.get(group).getObjets().get(child).getNom());
+	    }
 	}
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		//Log.i("TEST", "debut");
-	    //AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	    //Log.i("TEST", "apresmenuinfo");
-	    //Log.i("TEST", "info :"+info.position);
-	    //Log.i("TEST", "view du selected : "+info.targetView.toString());
-	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	    Log.i("MENUINFO", info.toString());
-	    Log.i("MENUINFO", Integer.toString((int) info.id));
+		ExpandableListContextMenuInfo info =
+				(ExpandableListContextMenuInfo) item.getMenuInfo();
+		int type = ExpandableListView.getPackedPositionType(info.packedPosition);
+		int groupPos = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+		int childPos = ExpandableListView.getPackedPositionChild(info.packedPosition);
+		
+	    Log.i("CONT_ITEM", info.toString());
+	    Log.i("CONT_ITEM", "Type : "+ type);
+	    Log.i("CONT_ITEM", "GroupPos : "+ groupPos);
+		Log.i("CONT_ITEM", "ChildPos : "+ childPos);
+		
 	    switch (item.getItemId()) {
+	    	// Items from the group context menu
 	        case R.id.addTaskItemMenu:
-	            //editNote(info.id);
+	            adapter.addTaskDialog(groupPos);
 	            return true;
 	        case R.id.editGroupNameItemMenu:
-	            //deleteNote(info.id);
+	        	adapter.editGroupDialog(groupPos);
 	            return true;
 	        case R.id.deleteGroupItemMenu:
+	        	groupes.remove(groupPos);
+	        	adapter.notifyDataSetChanged();
 	        	return true;
+	        
+	        // Items from the task context menu
+	        case R.id.editTaskNameItemMenu:
+	        	adapter.editTaskDialog(groupPos, childPos);
+	        	return true;
+	        case R.id.deleteTaskItemMenu:
+	        	groupes.get(groupPos).getObjets().remove(childPos);
+	        	adapter.notifyDataSetChanged();
+	        	return true;
+	        
 	        default:
 	            return super.onContextItemSelected(item);
 	    }
