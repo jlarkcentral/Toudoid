@@ -7,6 +7,7 @@ import com.formation.Toudoid.R;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,6 +82,7 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 				});			
 				
 				convertView.setTag(childViewHolder);
+				convertView.setBackgroundColor(Color.rgb(40,40,40));
 //			} else {
 //				childViewHolder = (ChildViewHolder) convertView.getTag();
 //				Log.i("INFO : TYPE ADD", Integer.toString(childViewHolder.type));
@@ -96,6 +98,7 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 //				context.registerForContextMenu(childViewHolder.taskCheckBox);
 				
 				convertView.setTag(childViewHolder);
+				convertView.setBackgroundColor(Color.rgb(40,40,40));
 //			} else {
 //				childViewHolder = (ChildViewHolder) convertView.getTag();
 //				Log.i("INFO : TYPE TASK", Integer.toString(childViewHolder.type));
@@ -121,7 +124,7 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 				context);
 
-		alertDialogBuilder.setTitle("Add a task to '" + groupes.get(groupPosition).getNom() + "'");
+		alertDialogBuilder.setTitle(context.getString(R.string.titleAddTaskDialog) + " '" + groupes.get(groupPosition).getNom() + "'");
 		final EditText input = new EditText(context);
 
 		alertDialogBuilder
@@ -140,7 +143,7 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 				else dialog.cancel();
 			}
 		})
-		.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+		.setNegativeButton(context.getString(R.string.cancel),new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog,int id) {
 				dialog.cancel();
 			}
@@ -155,7 +158,7 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 				context);
 
-		alertDialogBuilder.setTitle("Edit task");
+		alertDialogBuilder.setTitle(context.getString(R.string.EditTaskName));
 		final EditText input = new EditText(context);
 		input.setText(groupes.get(groupPosition).getObjets().get(taskPosition).getNom());
 
@@ -188,7 +191,7 @@ public class ToudoidAdapter extends BaseExpandableListAdapter {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 				context);
 
-		alertDialogBuilder.setTitle("Edit group");
+		alertDialogBuilder.setTitle(context.getString(R.string.EditGroupName));
 		final EditText input = new EditText(context);
 		input.setText(groupes.get(groupPosition).getNom());
 

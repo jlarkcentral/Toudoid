@@ -11,7 +11,11 @@
     <string name="DeleteGroup">Delete Group</string>
     <string name="EditTaskName">Edit Task Name</string>
     <string name="DeleteTask">Delete Task</string>
-    <string name="buttonBottom">Add a task</string>
+    <string name="buttonBottom">Add a Task</string>
+    <string name="task">Task</string>
+    <string name="group">Group</string>
+    <string name="titleAddTaskDialog">Add a Task to</string>
+    <string name="cancel">Cancel</string>
     
     <style name="ButtonText">
     <item name="android:layout_width">fill_parent</item>

@@ -109,7 +109,7 @@ public class ToudoidActivity extends Activity {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 				context);
 
-		alertDialogBuilder.setTitle("Add a group");
+		alertDialogBuilder.setTitle(this.getString(R.string.ButtonAddGroup));
 		final EditText input = new EditText(context);
 		alertDialogBuilder
 		.setView(input)
@@ -132,7 +132,7 @@ public class ToudoidActivity extends Activity {
 				else dialog.cancel();
 			}
 		})
-		.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+		.setNegativeButton(this.getString(R.string.cancel),new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog,int id) {
 				dialog.cancel();
 			}
@@ -203,12 +203,12 @@ public class ToudoidActivity extends Activity {
 	    
 	    if (type == 0) {
 	    	inflater.inflate(R.menu.context_menu_group, menu);
-	    	menu.setHeaderTitle("Group " + groupes.get(group).getNom());
+	    	menu.setHeaderTitle(this.getString(R.string.group) + " '" + groupes.get(group).getNom() + "'");
 	    }
 	    
 	    if (type == 1) {
 	    	inflater.inflate(R.menu.context_menu_task, menu);
-	    	menu.setHeaderTitle("Task " + groupes.get(group).getObjets().get(child).getNom());
+	    	menu.setHeaderTitle(this.getString(R.string.task) + " '" + groupes.get(group).getObjets().get(child).getNom() + "'");
 	    }
 	}
 	

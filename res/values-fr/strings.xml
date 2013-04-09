@@ -4,13 +4,17 @@
     <string name="ButtonAdd"></string>
     <string name="ButtonAddGroup">Ajouter un Groupe</string>
     <string name="deleteAll">Tout Supprimer</string>
-    <string name="DevRed">Changer l'Affichage</string>
+    <string name="DevRed">Changer l\'Affichage</string>
     <string name="AddTask">Ajouter une Tâche</string>
     <string name="EditGroupName">Renommer le Groupe</string>
     <string name="DeleteGroup">Supprimer le Groupe</string>
     <string name="EditTaskName">Renommer la Tâche</string>
     <string name="DeleteTask">Supprimer la Tâche</string>
     <string name="buttonBottom">Ajouter une Tâche</string>
+    <string name="task">Tâche</string>
+    <string name="group">Groupe</string>
+    <string name="titleAddTaskDialog">Ajouter une Tâche à</string>
+    <string name="cancel">Annuler</string>
     
     <style name="ButtonText">
     <item name="android:layout_width">fill_parent</item>
